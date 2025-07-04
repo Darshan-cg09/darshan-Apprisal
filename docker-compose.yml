@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres77
+    ports:
+      - "8011:5432"
+    environment:
+      POSTGRES_DB: hr_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: Backend
+    ports:
+      - "3652:3652"
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: Frontend
+    ports:
+      - "5996:80"
+
+  hr:
+    build:
+      context: ./HR
+      dockerfile: Dockerfile
+    container_name: HR
+    ports:
+      - "5997:80"
+
+volumes:
+  pgdata:
